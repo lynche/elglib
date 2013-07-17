@@ -1,0 +1,1 @@
+﻿package Elegant.media.anttikupila.revolt.effects{	import flash.display.BitmapData;		public class Effect	{				internal function Drawer():void		{					}				public function applyFX(gfx:BitmapData):void		{			trace("applyFX is not defined for " + this);		}	}}

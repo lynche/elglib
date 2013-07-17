@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   width="800" height="400" creationComplete="creationComplete(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.desktop.NativeApplication;
+			import flash.events.Event;
+			import flash.filesystem.File;
+			import flash.net.FileFilter;
+			import flash.net.SharedObject;
+			import flash.utils.ByteArray;
+			import mx.controls.Alert;
+			import mx.controls.FileSystemList;
+			import mx.events.FlexEvent;
+			
+			private var process:NativeProcess;
+			//----------------------------------------------
+			protected function selectSDK(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var file:File = new File();
+				file.browseForDirectory("选择SDK所在目录");
+				file.addEventListener(Event.SELECT, onSDKSelected);
+			}
+			
+			private function onSDKSelected(e:Event):void
+			{
+				var file:File = File(e.currentTarget);
+				file.removeEventListener(Event.SELECT, onSDKSelected);
+				
+				var path:String = file.nativePath;
+				var compc:File = new File(path + "\\bin\\compc.exe");
+				if(compc.exists)
+				{
+					sdkPath.text = file.nativePath;
+				} else {
+					Alert.show("需选择正确的SDK路径", "友情温馨各种提示");
+				}
+			}
+			
+			//-------------------------------------------------
+			
+			protected function creationComplete(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				NativeApplication.nativeApplication.addEventListener(Event.EXITING, handleExiting);
+				var share:SharedObject = SharedObject.getLocal("elglib_asdoc");
+				sdkPath.text = share.data.sdkPath ? share.data.sdkPath : sdkPath.text;
+				projectPath.text = share.data.projectPath ? share.data.projectPath : projectPath.text;
+				outputPath.text = share.data.outputPath ? share.data.outputPath : outputPath.text;
+				share.fps = 0;
+			}
+			
+			private function handleExiting(e:Event):void 
+			{
+				var share:SharedObject = SharedObject.getLocal("elglib_asdoc");
+				share.data.sdkPath = sdkPath.text;
+				share.data.projectPath = projectPath.text;
+				share.data.outputPath = outputPath.text;
+				share.flush();
+			}
+			
+			protected function creatAsDoc(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var file:File = new File(sdkPath.text + "\\bin\\asdoc.exe");
+				
+				if(file.exists)
+				{
+					//chcp936();
+					log.appendText((log.text.length ? "\n" : "") + "//--------------------------------\n");
+					
+					var nativeProcessInfo:NativeProcessStartupInfo = new NativeProcessStartupInfo();
+					nativeProcessInfo.executable = file;
+					
+					var args:Vector.<String> = new Vector.<String>;
+					
+					args.push("-keep-xml=true");
+					args.push("-lenient=true");
+					args.push("-source-path=" + projectPath.text);
+					args.push("-output=" + outputPath.text);
+					args.push("-doc-sources=" + projectPath.text);
+					
+					log.appendText(args.join("\n") + "\n");
+					
+					nativeProcessInfo.arguments = args;
+					
+					process = new NativeProcess();
+					process.addEventListener(ProgressEvent.STANDARD_OUTPUT_DATA, stdoutHandler);
+					process.addEventListener(ProgressEvent.STANDARD_ERROR_DATA, errorHandler);
+					process.start(nativeProcessInfo);
+				} else {
+					Alert.show("不存在 " + file.nativePath);
+				}
+			}
+			
+			private function appendArgs(url:String):Array
+			{
+				var rootURL:String = projectPath.text;
+				var fileroot:File = new File(url);
+				var result:Array = [];
+				var arr:Array = fileroot.getDirectoryListing();
+				
+				var l:int = arr.length;
+				for (var i:int = 0; i < l; i++) 
+				{
+					var file:File = File(arr[i]);
+					if (file.isDirectory)
+					{
+						result = result.concat(appendArgs(file.nativePath));
+					} else {
+						if(file.extension == "as")
+							result.push(file.nativePath.replace(rootURL + "\\", "").replace(/\\/g, "."));
+					}
+				}
+				return result;
+			}
+			
+			private function chcp936():void
+			{
+				var file:File = new File("c:\\windows\\system32\\cmd.exe");
+				var nativeProcessInfo:NativeProcessStartupInfo = new NativeProcessStartupInfo();
+				nativeProcessInfo.executable = file;
+				
+				var args:Vector.<String> = new Vector.<String>;
+				args[0] = "chcp 936";
+				nativeProcessInfo.arguments = args;
+				
+				process = new NativeProcess();
+				process.addEventListener(ProgressEvent.STANDARD_OUTPUT_DATA, stdoutHandler);
+				process.addEventListener(ProgressEvent.STANDARD_ERROR_DATA, errorHandler);
+				process.start(nativeProcessInfo);
+			}
+			
+			public function stdoutHandler(event:ProgressEvent):void
+			{
+				var process:NativeProcess = event.target as NativeProcess;
+				var data:String = process.standardOutput.readMultiByte(process.standardOutput.bytesAvailable, "gb2312");
+				log.appendText(data);
+			}
+			
+			public function errorHandler(event:ProgressEvent):void
+			{
+				var process:NativeProcess = event.target as NativeProcess;
+				var data:String = process.standardError.readMultiByte(process.standardError.bytesAvailable, "gb2312");
+				log.appendText(data);
+			}
+			
+			//-----------------------------------------------
+			private function selectProject(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var file:File = new File();
+				file.browseForDirectory("选择项目所在目录");
+				file.addEventListener(Event.SELECT, onProjectSelected);
+			}
+			
+			private function onProjectSelected(e:Event):void
+			{
+				var file:File = File(e.currentTarget);
+				file.removeEventListener(Event.SELECT, onSDKSelected);
+				
+				projectPath.text = file.nativePath;
+				outputPath.text = file.nativePath.replace(/\\src/, "") + "\\asdoc";
+			}
+			
+			//-----------------------------------------------
+			
+			protected function selectOutput(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				var file:File = new File();
+				file.browseForDirectory("选择项目所在目录");
+				file.addEventListener(Event.SELECT, onOutputSelected);
+			}
+			
+			private function onOutputSelected(e:Event):void
+			{
+				var file:File = File(e.currentTarget);
+				file.removeEventListener(Event.SELECT, onSDKSelected);
+				
+				outputPath.text = file.nativePath;
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:MenuBar x="0" y="0" width="100%"></mx:MenuBar>
+	<s:BorderContainer top="30" width="680" height="46" borderWeight="2" cornerRadius="5"
+					   dropShadowVisible="true" horizontalCenter="0">
+		<s:Button id="selectedBtn" x="579" y="10" label="选择" click="selectSDK(event)"/>
+		<s:Label id="sdkPath" x="139" y="10" width="415" height="21" backgroundColor="#DADADA"
+				 fontFamily="宋体" paddingLeft="10" text="选择正确的SDK路径" verticalAlign="middle"/>
+		<s:Label x="21" y="10" height="21" color="#000000" text="flashBuilder SDK："
+				 verticalAlign="middle"/>
+	</s:BorderContainer>
+	
+	<s:BorderContainer top="74" width="680" height="46" borderWeight="2" cornerRadius="5"
+					   dropShadowVisible="true" horizontalCenter="0">
+		<s:Button id="projectBtn" x="579" y="10" label="选择" click="selectProject(event)"/>
+		<s:Label id="projectPath" x="139" y="10" width="415" height="21" backgroundColor="#DADADA"
+				 fontFamily="宋体" paddingLeft="10" text="选择项目路径" verticalAlign="middle"/>
+		<s:Label x="21" y="10" height="21" color="#000000" text="project nativePath："
+				 verticalAlign="middle"/>
+	</s:BorderContainer>
+	
+	<s:BorderContainer top="118" width="680" height="46" borderWeight="2" cornerRadius="5"
+					   dropShadowVisible="true" horizontalCenter="0">
+		<s:Button id="outputBtn" x="579" y="10" label="选择" click="selectOutput(event)"/>
+		<s:Label id="outputPath" x="139" y="10" width="415" height="21" backgroundColor="#DADADA"
+				 fontFamily="宋体" paddingLeft="10" text="选择输出路径" verticalAlign="middle"/>
+		<s:Label x="21" y="10" height="21" color="#000000" text="output nativePath："
+				 verticalAlign="middle"/>
+	</s:BorderContainer>
+	
+	<s:Button y="186" label="生成AsDoc" click="creatAsDoc(event)" fontFamily="宋体" horizontalCenter="-303"/>
+	<s:TextArea id="log" x="159" y="188" width="581" height="180" borderVisible="true" fontFamily="宋体"/>
+</s:WindowedApplication>

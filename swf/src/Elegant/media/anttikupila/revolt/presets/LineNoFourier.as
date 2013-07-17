@@ -1,0 +1,1 @@
+﻿package Elegant.media.anttikupila.revolt.presets {	import Elegant.media.anttikupila.revolt.presets.LineFourier;		public class LineNoFourier extends LineFourier {		function LineNoFourier() {			super();			fourier = false;		}				override public function toString():String {			return "Line without fourier transformation";		}	}}
