@@ -224,7 +224,7 @@ package Elegant.layout
 		 * 按照自身的规则排列所有子元件
 		 * @throws 非法的对齐方式
 		 */
-		protected function layout():void
+		public function layout():void
 		{
 			throw Error("Must be override");
 		}

@@ -65,7 +65,7 @@ package Elegant.layout
 		/**
 		 * @inheritDoc
 		 */
-		override protected function layout():void
+		override public function layout():void
 		{
 			var tempWidth:int = 0;
 			var length:int = layoutArr.length;

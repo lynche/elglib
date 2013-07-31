@@ -114,7 +114,7 @@ package Elegant.layout
 		/**
 		 * @inheritDoc
 		 */
-		override protected function layout():void
+		override public function layout():void
 		{
 			if (locked)
 				return;
