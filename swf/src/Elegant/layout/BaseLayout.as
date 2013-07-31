@@ -215,7 +215,7 @@ package Elegant.layout
 		 * @return	被添加的元件应在的坐标
 		 * @throws 非法的对齐方式
 		 */
-		protected function nextPosition(child:DisplayObject, forceIndex:int = -1):Point
+		public function nextPosition(child:DisplayObject, forceIndex:int = -1):Point
 		{
 			return new Point();
 		}

@@ -84,7 +84,7 @@ package Elegant.layout
 		 * child属性无效
 		 * @inheritDoc
 		 */
-		override protected function nextPosition(child:DisplayObject, forceIndex:int = -1):Point
+		override public function nextPosition(child:DisplayObject, forceIndex:int = -1):Point
 		{
 			var point:Point = new Point();
 			var index:int = forceIndex == -1 ? numChildren : forceIndex;

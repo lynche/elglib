@@ -37,7 +37,7 @@ package Elegant.layout
 		 * forceIndex无效
 		 * @inheritDoc
 		 */
-		override protected function nextPosition(child:DisplayObject, forceIndex:int = -1):Point
+		override public function nextPosition(child:DisplayObject, forceIndex:int = -1):Point
 		{
 			var point:Point;
 			var gap:int = this.gap;
