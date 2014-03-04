@@ -176,6 +176,7 @@ package Elegant.utils
 		 */
 		private function onStageMouseMove(e:MouseEvent):void
 		{
+			if (_currentTipContainer.parent == null) return;
 			var point:Point = _currentTipContainer.parent.globalToLocal(new Point());
 			_currentTipContainer.x = e.stageX + point.x + 20;
 			_currentTipContainer.y = e.stageY + point.y + 20;

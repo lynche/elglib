@@ -35,6 +35,10 @@ package lynch.net.loading
 		 * @private
 		 */
 		public var container:DisplayObjectContainer;
+		/**
+		 * @private
+		 */
+		public var objectVars:Object;
 		
 		public function LoaderParams(totalNums:int, userParams:Array, onComplete:Function) 
 		{

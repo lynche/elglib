@@ -12,7 +12,7 @@
 			import flash.net.FileFilter;
 			import flash.net.SharedObject;
 			import flash.utils.ByteArray;
-			import mx.controls.Alert;
+			//import mx.controls.Alert;
 			import mx.controls.FileSystemList;
 			import mx.events.FlexEvent;
 			
@@ -37,7 +37,7 @@
 				{
 					sdkPath.text = file.nativePath;
 				} else {
-					Alert.show("需选择正确的SDK路径", "友情温馨各种提示");
+					//Alert.show("需选择正确的SDK路径", "友情温馨各种提示");
 				}
 			}
 			
@@ -93,7 +93,7 @@
 					process.addEventListener(ProgressEvent.STANDARD_ERROR_DATA, errorHandler);
 					process.start(nativeProcessInfo);
 				} else {
-					Alert.show("不存在 " + file.nativePath);
+					//Alert.show("不存在 " + file.nativePath);
 				}
 			}
 			
@@ -190,7 +190,7 @@
 	<fx:Declarations>
 		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
 	</fx:Declarations>
-	<mx:MenuBar x="0" y="0" width="100%"></mx:MenuBar>
+	<!-- <mx:MenuBar x="0" y="0" width="100%"></mx:MenuBar> -->
 	<s:BorderContainer top="30" width="680" height="46" borderWeight="2" cornerRadius="5"
 					   dropShadowVisible="true" horizontalCenter="0">
 		<s:Button id="selectedBtn" x="579" y="10" label="选择" click="selectSDK(event)"/>

@@ -72,11 +72,11 @@
 			//
 			//ToolTip.getInstance.addToolTip(tf, new TipContainerBase( { defaultLabel:true, text:"这是文本" } ));
 			
-			if (id > 10)
-				return;
-			
-			navigateToURL(new URLRequest("http://192.168.0.163:8080/DragonQQ/index.game?id=" + (9328 + id * 2)), "_blank");
-			TweenNano.delayedCall(.1, init, [id + 1]);
+			//if (id > 10)
+				//return;
+			//
+			//navigateToURL(new URLRequest("http://192.168.0.163:8080/DragonQQ/index.game?id=" + (9328 + id * 2)), "_blank");
+			//TweenNano.delayedCall(.1, init, [id + 1]);
 			
 			//var st:StringTween = new StringTween( { startString:"", 
 				//endString:"asdasds撒大声地dsadsaA是东方大厦",

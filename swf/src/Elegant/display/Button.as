@@ -164,11 +164,11 @@
 		{
 			if(_overState)
 			{
+				_overState.visible = true;
 				if(_downState && contains(_downState))
 					_downState.visible = false;
 				if(contains(_upState))
 					_upState.visible = false;
-				_overState.visible = true;
 				if (_overState is MovieClip)
 					MovieClip(_overState).gotoAndPlay(1);
 			}
@@ -218,7 +218,8 @@
 			}
 			
 			_downState = value;
-			//addChildAt(_downState, 0);
+			_downState.visible = false;
+			addChildAt(_downState, 0);
 		}
 		
 		/**
@@ -237,7 +238,8 @@
 			}
 			
 			_overState = value;
-			//addChildAt(_overState, 0);
+			_overState.visible = false;
+			addChildAt(_overState, 0);
 		}
 		
 		/**

@@ -28,7 +28,7 @@ package lynch.net.loading
 		private var progressBar:IProgressBar;
 		private var totalNum:int;
 		private var currentNum:int;
-		private var cacheHash:Dictionary;
+		private var cacheHash:Dictionary = new Dictionary;
 		
 		public function ResLoader() 
 		{
@@ -148,6 +148,7 @@ package lynch.net.loading
 			
 			var context:LoaderContext = LoaderContext(InitObject.getObject(objectVars, "context"));
 			var lp:LoaderParams = new LoaderParams(list.length, param, onComplete);
+			lp.objectVars = objectVars;
 			lp.name = InitObject.getString(objectVars, "name", "");
 			lp.cache = InitObject.getString(objectVars, "cache", "");
 			lp.container = InitObject.getObject(objectVars, "container") as DisplayObjectContainer;
@@ -174,8 +175,18 @@ package lynch.net.loading
 			var lp:LoaderParams = lynchloader.lp;
 			lp.userParams[0][lynchloader.id] = lynchloader.data;
 			
-			if (lp.container && lynchloader.data is DisplayObject)
-				lp.container.addChild(lynchloader.data);
+			if(lynchloader.data is DisplayObject)
+			{
+				if(lp.objectVars)
+				{
+					if (lp.objectVars.width)
+						lynchloader.data.width = lp.objectVars.width;
+					if (lp.objectVars.height)
+						lynchloader.data.height = lp.objectVars.height;
+				}
+				if (lp.container)
+					lp.container.addChild(lynchloader.data);
+			}
 			
 			if (--lp.totalNums == 0)
 			{
