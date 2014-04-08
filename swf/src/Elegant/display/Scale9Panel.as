@@ -61,14 +61,6 @@
 			if(source is DisplayObjectContainer)
 				containerMode = true;
 			
-			var _parent:DisplayObjectContainer = source.parent;
-			if(_parent)
-			{
-				_parent.addChildAt(this, _parent.getChildIndex(_source));
-				_parent.removeChild(_source);
-			}
-			Cloning.cloneAll(_source, this, ["scaleZ", "scaleX", "scaleY","rotationX", "rotationY", "rotationZ", "z", "scale9Grid", "width", "height"]);
-			
 			bitmap = new Bitmap();
 			super.addChild(bitmap);
 			
@@ -90,16 +82,7 @@
 		{
 			if (dis is Scale9Panel) return Scale9Panel(dis);
 			
-			var spt:DisplayObject;
-			if(dis is Bitmap)
-			{
-				spt = new Sprite();
-				Sprite(spt).addChild(dis);
-			}
-			else 
-				spt = dis;
-			
-			var scale:Scale9Panel = new Scale9Panel(spt);
+			var scale:Scale9Panel = new Scale9Panel(dis);
 			return scale;
 		}
 		
